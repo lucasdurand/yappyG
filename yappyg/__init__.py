@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 by Florian Mounier, Kozea
-# This file is part of brigit, licensed under a 3-clause BSD license.
-
-"""
-briGit - Very simple git wrapper module
-
-"""
+# Copyright (C) 2018 by Lucas Durand, Kozea
 
 import logging
 from logging import getLogger
-import os
-from subprocess import Popen, PIPE
+import os, sys
 from datetime import datetime
+import pexpect
+import getpass
+from io import StringIO 
+import warnings
 
 handler = None
 try:
@@ -37,34 +34,43 @@ class GitException(Exception):
 class RawGit(object):
     """Git command wrapper"""
 
-    def __init__(self, git_path, encoding="utf-8"):
+    def __init__(self, git_path, encoding="utf-8", timeout=30):
         """Init a Git wrapper with an instance"""
         self.path = git_path
         self.encoding = encoding
+        self.timeout = timeout 
 
     def __call__(self, command, *args, **kwargs):
         """Run a command with args as arguments."""
-        full_command = (('git', command) +
-                        tuple((u"--%s=%s" % (key, value)
-                               if len(key) > 1
-                               else u"-%s %s" % (
-                                   key, value))
-                              for key, value in kwargs.items()) +
-                        args)
-        self.logger.info(u"> %s" % u' '.join(full_command))
-        process = Popen(full_command, stdout=PIPE, stderr=PIPE, cwd=self.path)
-        out, err = process.communicate()
-        out = out.decode(self.encoding)
-        err = err.decode(self.encoding)
-        self.logger.debug("%s" % out)
-        retcode = process.poll()
+        named = ' '.join(f"--{key}=\"{value}\"" if len(key) > 1 else f"-{key} {value}"
+                      for key, value in kwargs.items())
+        full_command = f'git {command} {" ".join(args)} {named}'
+        self.process = pexpect.spawn(full_command, encoding=self.encoding, cwd=self.path, logfile=sys.stdout, timeout=self.timeout)
+        expectations = ['Username*','Password*',pexpect.EOF,pexpect.TIMEOUT]
+        stage = self.process.expect(expectations)
+        while stage < 2:
+            # Stop logging in here! ----------#
+            logfile, self.process.logfile = self.process.logfile, None
+            if stage == 0:
+                # Get Username
+                self.process.sendline(input())
+            elif stage == 1:
+                # Get Password
+                self.process.sendline(getpass.getpass())
+            # Restore logging
+            self.process.logfile = logfile
+            # --------------------------------#
+            stage = self.process.expect(expectations)
+        if stage == 3:
+            self.process.stderr.write('If this is a long-running process, increase the timeout with self.timeout=X')
+        retcode = self.process.exitstatus
         if retcode:
-            if err:
-                self.logger.error("%s" % err)
-            raise GitException(
-                "%s has returned %d - error was %s" % (
-                    ' '.join(full_command), retcode, err))
-        return out
+            warnings.warn(
+                "%s has returned %d:\n %s" % (
+                    full_command, retcode, self.process.before.strip('\n').split('\n')[-1]))
+        return
+
+
 
     def __getattr__(self, name):
         """Any method not implemented will be executed as is."""

@@ -7,31 +7,26 @@ briGit - Very simple git wrapper module
 
 from setuptools import find_packages, setup
 
-VERSION = '1.2'
+VERSION = '0.1'
 
 
 options = dict(
-    name="brigit",
+    name="yappyg",
     version=VERSION,
-    description="Very simple git wrapper module",
+    description="Yet Another Package for Py Git, that handles user prompts in native python",
     long_description=__doc__,
-    author="Florian Mounier - Kozea",
-    author_email="florian.mounier@kozea.fr",
+    author="Lucas Durand",
+    author_email="lucas@lucasdurand.xyz",
     license="BSD",
     platforms="Any",
     install_requires=['log_colorizer'],
     provides=['brigit'],
     packages=find_packages(),
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest-cov', 'pytest-flake8', 'pytest-isort', 'pytest'],
-    test_suite='brigit.test',
-    use_2to3=True,
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Libraries :: Python Modules"])
 

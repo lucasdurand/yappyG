@@ -1,6 +1,9 @@
-briGit
+yappyG
 ======
 
+yappyG is another package for python Git
+
+This a quick and dirty fork of briGit:
 Very simple git wrapper module licensed under BSD
 Copyright (C) 2011 by Florian Mounier, Kozea
 
@@ -10,7 +13,7 @@ Installation
 
 Use pip :
 
-    pip install git+git://github.com/Kozea/brigit.git
+    pip install git+git://github.com/lucasdurand/yappyg.git
 
 And that's all.
 
