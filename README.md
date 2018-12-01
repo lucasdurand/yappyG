@@ -15,25 +15,24 @@ Use pip :
 
     pip install git+git://github.com/lucasdurand/yappyg.git
 
-And that's all.
-
-
 Usage
 -----
 
 ```python
-from brigit import Git
+from yappyg import Git
 new_repo = Git("~/brigit/new_repo")  # Will do a git init
-git = Git("~/brigit/clone_of_brigit",
-    "git://github.com/Kozea/brigit.git",
-     quiet=False)  # Will do a git clone git://github.com/Kozea/brigit.git
+git = Git("~/brigit/i_forked_this_from_brigit",
+    "git://github.com/lucasdurand/yappyg.git",
+     quiet=False)  # Will do a git clone
 
-# Then you can use all of your git command like this:
+# Git commands passed through as methods
 git.pull()
-# Touch a new file
-open(os.path.expanduser("~/brigit/clone_of_brigit/myNewFile"), "a+").close()
+
+import os
+open(os.path.expanduser("~/brigit/i_forked_this_from_brigit/myNewFile"), "a+").close()
 git.add("myNewFile")
-git.commit("-a", message="Adding myNewFile")
+# Use *args and **kwargs to pass commands
+git.commit("-a", message="Adding myNewFile") # git commit -a --message=
 # There's also some utils command:
 git.pretty_log()
 git.push() # if you have push rights
