@@ -3,7 +3,7 @@
 # This file is part of brigit, licensed under a 3-clause BSD license.
 import shutil
 
-from brigit import Git
+from yappyg import Git
 
 
 def test_basic():
