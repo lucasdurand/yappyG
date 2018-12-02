@@ -13,7 +13,7 @@ Installation
 
 Use pip :
 
-    pip install -i https://test.pypi.org/simple/ yappyg
+    pip install -i https://pypi.org/simple/ yappyg
 
 How it works
 ------------
