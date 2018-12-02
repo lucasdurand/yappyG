@@ -20,7 +20,7 @@ options = dict(
     license="BSD",
     platforms="Any",
     install_requires=['log_colorizer'],
-    provides=['brigit'],
+    provides=['yappyg'],
     packages=find_packages(),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

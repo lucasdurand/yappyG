@@ -17,28 +17,25 @@ try:
 except ImportError:
     handler = logging.StreamHandler()
 
-
 class NullHandler(logging.Handler):
     """Handler that do nothing"""
     def emit(self, record):
         """Do nothing"""
 
-
 class GitException(Exception):
     """Exception raised when something went wrong for git"""
-
     def __init__(self, message):
         super(GitException, self).__init__(message)
-
 
 class RawGit(object):
     """Git command wrapper"""
 
-    def __init__(self, git_path, encoding="utf-8", timeout=30):
+    def __init__(self, git_path, encoding="utf-8", timeout=30, expectations = ['Username*','Password*',pexpect.EOF,pexpect.TIMEOUT]):
         """Init a Git wrapper with an instance"""
         self.path = git_path
         self.encoding = encoding
         self.timeout = timeout 
+        self.expectations = expectations
 
     def __call__(self, command, *args, **kwargs):
         """Run a command with args as arguments."""
@@ -46,8 +43,7 @@ class RawGit(object):
                       for key, value in kwargs.items())
         full_command = f'git {command} {" ".join(args)} {named}'
         self.process = pexpect.spawn(full_command, encoding=self.encoding, cwd=self.path, logfile=sys.stdout, timeout=self.timeout)
-        expectations = ['Username*','Password*',pexpect.EOF,pexpect.TIMEOUT]
-        stage = self.process.expect(expectations)
+        stage = self.process.expect(self.expectations)
         while stage < 2:
             # Stop logging in here! ----------#
             logfile, self.process.logfile = self.process.logfile, None
@@ -65,9 +61,8 @@ class RawGit(object):
             self.process.stderr.write(f'Time out!\nIf this is a long-running process, increase the timeout with self.timeout=X\nOr are we waiting on a prompt we are not expecting: ${expectations}')
         retcode = self.process.exitstatus
         if retcode:
-            warnings.warn(
-                "%s has returned %d:\n %s" % (
-                    full_command, retcode, self.process.before.strip('\n').split('\n')[-1]))
+            err = "Yappy Git has encountered an error!\n`{}` has exited with code {}:\n\n{}".format(full_command.strip(), retcode, self.process.before)
+            raise GitException(err)
         return
 
 
