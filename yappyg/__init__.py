@@ -56,7 +56,7 @@ class RawGit(object):
             # Restore logging
             self.process.logfile = logfile
             # --------------------------------#
-            stage = self.process.expect(expectations)
+            stage = self.process.expect(self.expectations)
         if stage == 3:
             self.process.stderr.write(f'Time out!\nIf this is a long-running process, increase the timeout with self.timeout=X\nOr are we waiting on a prompt we are not expecting: ${expectations}')
         retcode = self.process.exitstatus
