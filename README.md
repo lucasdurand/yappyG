@@ -13,7 +13,7 @@ Installation
 
 Use pip :
 
-    pip install git+git://github.com/lucasdurand/yappyg.git
+    pip install -i https://test.pypi.org/simple/ yappyg
 
 How it works
 ------------
