@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-briGit - Very simple git wrapper module
+yappyG is Yet Another Package for Py Git
 """
 
 from setuptools import find_packages, setup
