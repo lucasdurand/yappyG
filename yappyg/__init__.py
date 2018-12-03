@@ -9,6 +9,7 @@ import pexpect
 import getpass
 from io import StringIO 
 import warnings
+from subprocess import Popen
 
 handler = None
 try:
@@ -37,11 +38,15 @@ class RawGit(object):
         self.timeout = timeout 
         self.expectations = expectations
 
-    def __call__(self, command, *args, **kwargs):
-        """Run a command with args as arguments."""
+    def resolve_command(self, base, command, *args, **kwargs):
         named = ' '.join(f"--{key}=\"{value}\"" if len(key) > 1 else f"-{key} {value}"
                       for key, value in kwargs.items())
-        full_command = f'git {command} {" ".join(args)} {named}'
+        full_command = f'{base} {command} {" ".join(args)} {named}'
+        return full_command
+
+    def __call__(self, command, *args, **kwargs):
+        """Run a command with args as arguments."""
+        full_command = self.resolve_command('git', command, *args, **kwargs)
         self.process = pexpect.spawn(full_command, encoding=self.encoding, cwd=self.path, logfile=sys.stdout, timeout=self.timeout)
         stage = self.process.expect(self.expectations)
         while stage < 2:
@@ -121,3 +126,10 @@ class Git(RawGit):
                 'datetime': datetime.fromtimestamp(float(fields[3])),
                 'message': fields[4]
             }
+
+    def nbdiff(self, *args, **kwargs):
+        full_command = self.resolve_command('nbdiff-web', '', *args, **kwargs)
+        full_command = full_command.split(' ')
+        # remove empty args
+        full_command = list(filter(lambda x: x, full_command))
+        Popen(full_command)
