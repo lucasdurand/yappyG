@@ -22,6 +22,7 @@ options = dict(
     install_requires=['log_colorizer','nbdime'],
     provides=['yappyg'],
     packages=find_packages(),
+    url = 'https://github.com/lucasdurand/yappyG',
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
