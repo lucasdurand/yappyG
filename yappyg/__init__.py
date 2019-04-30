@@ -63,7 +63,7 @@ class RawGit(object):
             # --------------------------------#
             stage = self.process.expect(self.expectations)
         if stage == 3:
-            self.process.stderr.write(f'Time out!\nIf this is a long-running process, increase the timeout with self.timeout=X\nOr are we waiting on a prompt we are not expecting: ${expectations}')
+            self.process.stderr.write(f'Time out!\nIf this is a long-running process, increase the timeout with self.timeout=X\nOr are we waiting on a prompt we are not expecting: ${self.expectations}')
         retcode = self.process.exitstatus
         if retcode:
             err = "Yappy Git has encountered an error!\n`{}` has exited with code {}:\n\n{}".format(full_command.strip(), retcode, self.process.before)
