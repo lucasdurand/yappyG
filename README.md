@@ -1,3 +1,5 @@
+![](https://badgen.net/pypi/v/yappyg)
+
 yappyG
 ======
 
