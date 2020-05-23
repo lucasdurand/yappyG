@@ -1,4 +1,8 @@
-![](https://badgen.net/pypi/v/yappyg)
+[![](https://badgen.net/pypi/v/yappyg)](https://pypi.org/project/yappyg/)
+[![](https://badgen.net/pypi/license/yappyg)](https://pypi.org/project/yappyg/)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/yappyg)
+![PyPI - Status](https://img.shields.io/pypi/status/yappyg.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 yappyG
 ======
